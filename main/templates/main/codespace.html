@@ -1,0 +1,137 @@
+{% extends "main/layout.html" %}
+{% block title %}
+    Code-spaces
+{% endblock %}
+{% block main %}
+<div class="main" style="background-color: white">
+    <div class="headsection" style="height: 40%">
+        <div style="display: flex; justify-content: space-around; width: 100%; color: white">
+            <kbd><code><span class="h5">{{question.Question_title}}</span></code></kbd>
+            <span class="h4" id="time" style="background-color: gray">Time Section</span>
+        </div>
+    {%for stats in question.stats_question.all%}
+        <div style="height: 40%; width: 100%; display: flex; justify-content: space-around; padding: 20px; color: white">
+            <span class="h5">
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="color:black;width: {{stats.Difficulty}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{stats.Difficulty}}%..........................</div>
+                </div>
+            </span>
+            <span class="h5">
+                <div class="progress">
+                    <div class="progress-bar bg-warning" role="progressbar" style="color:black;width: {{stats.Acceptance}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"> {{stats.Acceptance}}%..............................</div>
+                </div>
+            </span>
+            <span class="h5">
+                <div class="progress">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{stats.Tricky}}%;color:black" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"> {{stats.Tricky}}%...............................</div>
+                </div>
+            </span>
+            {%endfor%}
+        </div>
+        <div class="bars" style="display: flex; justify-content: space-around; width: 100%; color: white">
+            <span class="h6">Difficulty</span>
+            <span class="h6">Acceptance rate</span>
+            <span class="h6">Tricky one</span>
+
+        </div>
+        <div style="color : wheat;display:flex;justify-content:space-around">
+            <div style="margin:30px" class="text-primary " id="heading_title"> {{question.Question_title}}</div>
+            <div style="display:flex;justify-content:space-between">
+            <div class="h6" style="margin:30px;">
+                <span>
+                <form action="{% url 'code' %}" method="POST" enctype="multipart/form-data" style="display:flex;color:white;align-items:flex-start">
+
+                    {% csrf_token %}
+                    <input name="title" type="text" value="{{ question.Question_title }}" hidden>
+                    {{ form.as_p }}
+                    <div class="input-group mb-3" style="padding-top:10px">
+
+                        <input type="text" class="form-control" placeholder="Notes for this question" name = "note" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm" style="padding:0 10px 0 4px;margin-top:15px">Submit</button>
+                </form>
+                </span>
+                </div>
+
+        </div>
+    </div>
+    <div class="code-section" style="display: flex;flex-wrap:wrap; justify-content: space-around; height: 50vh;text-align:center;align-items:center;wrap;flex-wrap:wrap">
+        <div class="description" style="color:#0D1321;width: 45%;min-width:30%; height: 100%; background-color:wheat; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; padding: 20px; font-family: Arial, sans-serif; overflow-y: auto; border-radius: 10px;">
+            <dl class="text-primary" style="background-color:transparent">Code description</dl>
+            <hr>
+        <div style="background:inherit">
+            {{question.Question_discription}}
+        </div>
+        <br>
+        <div class="code_explanation" style="background:inherit;display:flex;align-items:flex-start;flex-direction:column">
+            <span><kbd>Input</kbd>:   {{question.input1}}</span>
+            <br>
+            <span><code>Output</code>:   {{question.output1}}</span>
+            <hr>
+            <span><kbd>Input</kbd>:   {{question.input2}}</span>
+            <br>
+            <span><code>Output</code>:   {{question.output2}}</span>
+            <hr>
+            <code>Tecnology:</code>
+            <kbd>{% for tag in question.tags_for_question.all%}
+                    {{tag.tags_tecnology}}    
+                {%endfor%}
+            </kbd>
+
+
+            <code>Frameworks :</code>
+            <kbd>{% for tag in question.tags_for_question.all%}
+                {{tag.tags_frameworks}}    
+            {%endfor%}
+
+        </kbd>
+        <hr>
+        <kbd id ="open_discussion">Discussion Form </kbd>
+
+        </div>
+        </div>
+        
+        <div id="review" >
+            <form id="review_form" >
+                <input type="text" value={{question.id}} hidden id="question_id">
+                <div>
+                    <label class="form-label">Difficulty :</label>
+                    <input type="range" class="customRange1" id ="Difficulty_level" min="0" max="100">
+                </div>
+                <div>
+                    <label  class="form-label">Acceptance :</label>
+                    <input type="range"  class="customRange1" id ="Acceptance_level" min="0" max="100"> 
+                </div>
+                <div>
+                    <label  class="form-label">Tricky :</label>
+                    <input type="range"  class="customRange1" id="Tricky_level" min="0" max="100">
+                </div>
+                <button type="button" id="form_submit" class="btn btn-primary btn-sm">Submit</button>
+
+            </form>
+        </div>
+        <div class="discussion" style="color:#0D1321;width: 45%; height: 80%; background-color: rgb(0,142, 146); box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; padding: 20px; font-family: Arial, sans-serif; overflow-y: auto; border-radius: 10px;display:none">
+
+            <hr>
+            <div id="carouselExampleIndicators" style="background:transparent;overflow-y:scroll" class="carousel slide" data-bs-ride="carousel">
+               
+                {% for form in diss.all %}
+                    <div class="carousel-inner" style="background: #f8f9fa; margin: 10px; padding: 10px; border-radius: 5px;">
+                        <div class="carousel-item active" style="background: #fff; padding: 10px; border-radius: 5px;">
+                            <kbd style="background: #007bff; color: #fff; padding: 5px;">on:</kbd>
+                            <code style="background: #f8f9fa; color: #000; padding: 5px;">{{ form.timestamp }}</code>
+                            <kbd style="background: #007bff; color: #fff; padding: 5px;">Uploaded to:</kbd>
+                            <code style="background: #f8f9fa; color: #000; padding: 5px;">{{ form.path }}</code>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px;">{{ form.note }}</div>
+                            <div style="width: 10px;"></div>
+                        </div>
+                        <hr style="border-color: #007bff;">
+                    </div>
+                {% endfor %}
+                </div>
+
+            </div>
+        </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'main/layout.html'%}
+{%block title%}
+code-colab-hub
+{%endblock%}
+{%block main%}
+
+<span><kbd class="bg-alert">Problems of this day</kbd></span>
+
+<div class="Problems_continer continer" style="padding-top:1%;width:90%;margin:auto">
+
+            <table class="table table-striped table-dark table-hover">
+                <thead class="">
+                  <tr>
+                    <th scope="col">id</th>
+                    <th  colspan="3">Title</th>
+                    <th>Difficulty</th>
+                    <th>Acceptance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%for question in questions%}
+                    <tr>
+                      <th scope="row">{{forloop.counter}}</th>
+                      <td colspan="3">
+                          <a type="text" name="id" href ="code/{{question.id}}"> {{question.Question_title}} </a>
+                    </td>
+                      {%for degree in question.stats_question.all%}
+                      <td>
+                        {{degree.Difficulty}}
+
+                      </td>
+                      <td>
+                        {{degree.Acceptance}}
+                      </td>
+                      {%endfor%}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+</div>
+  <div class="message_block">
+  </div> 
+
+
+{%endblock%}

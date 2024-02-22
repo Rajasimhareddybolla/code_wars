@@ -1,0 +1,92 @@
+{%load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="{% static 'profile.css'%}">
+    <script src="{% static 'index.js' %}"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="profile-header">
+            <a href="/"><img src="{{user.image}}" alt="Profile Picture"></a>
+            <h1>{{user.username}}</h1>
+            <p>Software Engineer</p>
+        </div>
+        <div class="profile-stats">
+            <div>
+                <h2>{{user.q_no}}</h2>
+                <p>Problems Solved</p>
+            </div>
+            <div>
+                <h2>{{user.connections}}</h2>
+                <p>Connections</p>
+            </div>
+            <div>
+                <h4>{{user.email}}</h4>
+                <p>email</p>
+            </div>
+            <div>
+        
+            {% if user.is_connected %}
+                <button id ="dconnect_button" type="button" value="{{user.id}}" class="btn btn-primary" style="background:skyblue;border-radius:5px"> disconnect </button>
+            {% else %}
+                <button id ="connect_button" type="button" value="{{user.id}}" class="btn btn-primary" style="background:skyblue;border-radius:5px;"> connect </button>
+            {% endif %}
+            </div>
+        </div>
+        <div class="prev-questions">
+            <h2>Previous Questions</h2>
+            <ul class="question-list">
+                {%for ques in user.problems_solved%}
+                <li><a href="{% url 'code' id=ques.Questions.id%}">{{ques.Questions.Question_title}}</a></li>
+                {%endfor%}
+            </ul>
+        </div>
+        <div class="consistency">
+            <h2>Bio</h2>
+            <div class="consistency-chart">
+                <div class="consistency-chart-bar" style="width: 10%;">{{user.bio}}</div><!-- Example: Width represents consistency percentage for each month -->
+                <!-- Add more bars for each month -->
+            </div>
+        </div>
+        <div class="recent-activity">
+            <h2>Recent Activity</h2>
+            <ul class="activity-feed">
+                <li><span>Today:</span> Solved problem "Two Sum"</li>
+                <li><span>Yesterday:</span> Updated profile picture</li>
+                <!-- Add more activities -->
+            </ul>
+        </div>
+        <div class="achievements">
+            <h2>Achievements</h2>
+            <ul class="badge-list" style="display:flex;overflow:auto">
+                {% for badge in user.achivments %}
+                    <li><div class="badge">{{ forloop.counter }} </div></li>
+                    <img src="{% static badge %}">
+                {% endfor %}
+                <!-- Add more badges -->
+            </ul>
+        </div>
+        {% if user.root  %}
+        <div class="profile-settings">
+            <h2>Profile Settings</h2>
+            <form class="profile-settings-form" action = "update_profile" method="post">
+                {%csrf_token%}
+                <input type="text" name="username" value={{user.username}} disabled default="">
+                <input type="text" name ="email" disabled value={{user.email}}>
+                <textarea  name="bio" value={{user.bio}}></textarea>
+                <input type="text" name="url" value={{user.image}}>
+                <input type="submit" value="Save Changes">
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>
+ 
